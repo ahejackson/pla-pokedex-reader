@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLA Pokedex Reader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <link href="static/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1 class="pla-heading"><span class="pla-heading-highlight">PLA</span> Pokedex Reader</h1>
+    </header>
+
+    <main>
+        <section class="pla-section-options">
+            <div>
+                Have Shiny Charm? <input type="checkbox">
+            </div>
+
+            <div>
+                <ul>
+                    <li>Set all to research level &lt; 10</li>
+                    <li>Set all to research level 10</li>
+                    <li>Set all to research perfect</li>
+                </ul>
+            </div>
+
+            <div>
+                <button>Read from save file</button>
+            </div>
+
+            <div>
+                <button>Export</button>
+            </div>
+        </section>
+
+        <section class="pla-section-results">
+
+            <div>
+                <h2>Research Levels</h2>
+
+                <div>
+                    <input type="text" placeholder="Filter Pokemon">
+                </div>
+
+                <div>
+                    Results List
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
