@@ -349,3 +349,22 @@ section {
     transform: rotate(360deg);
   }
 }
+
+.pla-research-table {
+  width: 100%;
+}
+
+.pla-research-row {
+  height: 56px;
+}
+
+.pla-research-col1 {
+  min-width: 68px;
+  width: 10%;
+  text-align: center;
+}
+
+.pla-research-col3 {
+  min-width: 10ch;
+  width: 15%;
+}

@@ -1,59 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLA Pokedex Reader</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-    <link href="static/css/style.css" rel="stylesheet">
-</head>
+{% block main %}
+<section class="pla-section-options">
+    <div>
+        Have Shiny Charm? <input id="pla-research-shinycharm" type="checkbox">
+    </div>
 
-<body>
-    <header>
-        <h1 class="pla-heading"><span class="pla-heading-highlight">PLA</span> Pokedex Reader</h1>
-    </header>
+    <div>
+        <button id="pla-research-all0">Set all to research level &lt; 10</button>
+        <button id="pla-research-all1">Set all to research level 10</button>
+        <button id="pla-research-all3">Set all to research perfect</button>
+    </div>
 
-    <main>
-        <section class="pla-section-options">
-            <div>
-                Have Shiny Charm? <input type="checkbox">
-            </div>
+    <div>
+        <button id="pla-research-load">Read from save file</button>
+    </div>
 
-            <div>
-                <ul>
-                    <li>Set all to research level &lt; 10</li>
-                    <li>Set all to research level 10</li>
-                    <li>Set all to research perfect</li>
-                </ul>
-            </div>
+    <div>
+        <button id="pla-research-save">Export</button>
+    </div>
+</section>
 
-            <div>
-                <button>Read from save file</button>
-            </div>
+<section class="pla-section-results">
 
-            <div>
-                <button>Export</button>
-            </div>
-        </section>
+    <div>
+        <h2>Research Levels</h2>
 
-        <section class="pla-section-results">
+        <div>
+            <input type="text" id="filterlist" placeholder="Search Pokemon...">
+        </div>
 
-            <div>
-                <h2>Research Levels</h2>
+        <div>
+            <table class="pla-research-table">
+                <colgroup>
+                    <col class="pla-research-col1">
+                    <col class="pla-research-col2">
+                    <col class="pla-research-col3">
+                    <col class="pla-research-col3">
+                    <col class="pla-research-col3">
+                </colgroup>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}
 
-                <div>
-                    <input type="text" placeholder="Filter Pokemon">
-                </div>
-
-                <div>
-                    Results List
-                </div>
-            </div>
-        </section>
-    </main>
-</body>
-
-</html>
+{% block templates %}
+<template data-pla-research-row-template>
+    <tr class="pla-research-row">
+        <td>
+            <img alt="" data-pla-research-row-img>
+        </td>
+        <td class="pla-research-row-name">
+        </td>
+        <td>
+            <input type="radio" class="pla-research-radio" value="0" /> None
+        </td>
+        <td>
+            <input type="radio" class="pla-research-radio" value="1" /> Level 10
+        </td>
+        <td>
+            <input type="radio" class="pla-research-radio" value="3" /> Perfect
+        </td>
+    </tr>
+</template>
+{% endblock %}
