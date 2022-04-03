@@ -1,11 +1,19 @@
 const researchTable = document.querySelector(".pla-research-table");
 const rowTemplate = document.querySelector("[data-pla-research-row-template]");
-const shinyCharmCheckbox = document.getElementById("pla-research-shinycharm");
-const filterInput = document.getElementById("filterlist");
+const shinyCharmCheckbox = document.querySelector("#pla-research-shinycharm");
+const filterInput = document.querySelector("#filterlist");
 
 let hisuidex = [];
 const researchRows = new Map();
 const researchRadios = new Map();
+
+const modal = document.querySelector("#pla-research-load-modal");
+const fileUpload = document.querySelector("#pla-research-fileupload");
+
+const errors = document.querySelector("[data-pla-errors]");
+const modalErrors = document.querySelector("[data-pla-modal-errors]");
+
+const VALID_FILESIZES = [0x136dde, 0x13ad06];
 
 function loadPokedex() {
   fetch("/api/hisuidex")
@@ -16,7 +24,11 @@ function loadPokedex() {
       // The javascript is wired up to the page once the pokedex data has loaded
       initialisePage();
     })
-    .catch((error) => {});
+    .catch((error) => {
+      showError(
+        "There was an error connecting to the server, the program is not running properly"
+      );
+    });
 }
 
 // This gets done first, to make sure the pokedex is loaded before the page is properly configured
@@ -25,7 +37,7 @@ loadPokedex();
 const initialisePage = () => {
   hisuidex.forEach((pokemon) => {
     const row = rowTemplate.content.cloneNode(true);
-    row.querySelector(".pla-research-row-name").innerText = pokemon.name;
+    row.querySelector(".pla-research-row-name").textContent = pokemon.name;
     row.querySelector(
       "[data-pla-research-row-img]"
     ).src = `/static/img/sprite/c_${pokemon.dex_national}.png`;
@@ -44,7 +56,7 @@ const initialisePage = () => {
     researchTable.appendChild(row);
   });
 
-  document.getElementById("pla-research-all0").addEventListener("click", () => {
+  document.querySelector("#pla-research-all0").addEventListener("click", () => {
     for (const [_, radios] of researchRadios) {
       radios[0].checked = true;
       radios[1].checked = false;
@@ -53,7 +65,7 @@ const initialisePage = () => {
     saveResearch();
   });
 
-  document.getElementById("pla-research-all1").addEventListener("click", () => {
+  document.querySelector("#pla-research-all1").addEventListener("click", () => {
     for (const [_, radios] of researchRadios) {
       radios[0].checked = false;
       radios[1].checked = true;
@@ -62,7 +74,7 @@ const initialisePage = () => {
     saveResearch();
   });
 
-  document.getElementById("pla-research-all3").addEventListener("click", () => {
+  document.querySelector("#pla-research-all3").addEventListener("click", () => {
     for (const [_, radios] of researchRadios) {
       radios[0].checked = false;
       radios[1].checked = false;
@@ -82,16 +94,69 @@ const initialisePage = () => {
 
   shinyCharmCheckbox.addEventListener("change", saveResearch);
 
-  document.getElementById("pla-research-load").addEventListener("click", () => {
-    loadResearch();
-  });
+  document
+    .querySelector("[data-pla-research-load-open]")
+    .addEventListener("click", () => {
+      modal.showModal();
+    });
 
-  document.getElementById("pla-research-save").addEventListener("click", () => {
-    saveResearch();
+  document
+    .querySelector("[data-pla-research-load-close]")
+    .addEventListener("click", () => {
+      fileUpload.value = null;
+      modal.close();
+    });
+
+  fileUpload.addEventListener("change", (e) => {
+    selectSaveFile(e.target.files);
   });
 
   loadResearch();
+  modal.showModal();
 };
+
+function selectSaveFile(files) {
+  if (files.length != 1) {
+    showModalError("Select a file");
+    return;
+  }
+
+  const [file] = files;
+
+  if (file.name != "main") {
+    showModalError('Select the file "main"');
+    return;
+  }
+
+  if (VALID_FILESIZES.indexOf(file.size) < 0) {
+    showModalError(
+      "The file you chose isn't the right size for the PLA save file"
+    );
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("save", file);
+
+  fetch("/api/upload", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((res) => {
+      console.log(res);
+
+      if (res.hasOwnProperty("error")) {
+        showModalError(error);
+      } else {
+        fileUpload.value = null;
+        modal.closeModal();
+      }
+    })
+    .catch((error) => {
+      showModalError(error);
+    });
+}
 
 function loadResearch() {
   let plaResearchString = localStorage.getItem("plaResearch");
@@ -138,4 +203,19 @@ function setRadioValue(radios, value) {
   for (const radio of radios) {
     radio.checked = parseInt(radio.value, 10) == value;
   }
+}
+
+function showError(error) {
+  errorDiv = document.createElement("div");
+  errorDiv.classList.add("pla-error");
+  errorDiv.textContent = error;
+  errors.appendChild(errorDiv);
+}
+
+function showModalError(error) {
+  modalErrors.innerHTML = "";
+  errorDiv = document.createElement("div");
+  errorDiv.classList.add("pla-error");
+  errorDiv.textContent = error;
+  modalErrors.appendChild(errorDiv);
 }

@@ -368,3 +368,26 @@ section {
   min-width: 10ch;
   width: 15%;
 }
+
+.pla-error {
+  color: #d8000c;
+  background-color: #ffbaba;
+  border: 1px solid #d8000c;
+  border-radius: 0.4rem;
+  padding: 0.8em 1em;
+  margin: 1em 0;
+}
+
+.pla-modal {
+  margin: auto;
+  max-width: 50ch;
+  background-color: var(--color-light);
+  border: 1px solid var(--color-shadow);
+  border-radius: 0.4rem;
+  padding: 1rem 1.2rem;
+  box-shadow: rgb(0 0 0 / 0.5) 0px 8px 24px;
+}
+
+.pla-modal::backdrop {
+  background: rgb(0 0 0 / 0.5);
+}
