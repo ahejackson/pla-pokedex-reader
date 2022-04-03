@@ -5,6 +5,11 @@
   --color-shadow: #4d4b4a;
   --color-black: #0d0d0d;
   --color-spot: #8abf8d;
+  
+  --color-message-error: #d8000c;
+  --color-message-error-bg: #ffbaba;
+  --color-message-info: var(--color-black);
+  --color-message-info-bg: var(--color-accent-1);
 }
 
 /*
@@ -369,10 +374,19 @@ section {
   width: 15%;
 }
 
-.pla-error {
-  color: #d8000c;
-  background-color: #ffbaba;
-  border: 1px solid #d8000c;
+.pla-message-error {
+  color: var(--color-message-error);
+  background-color: var(--color-message-error-bg);
+  border: 1px solid var(--color-message-error);
+  border-radius: 0.4rem;
+  padding: 0.8em 1em;
+  margin: 1em 0;
+}
+
+.pla-message-info {
+  color: var(--color-message-info);
+  background-color: var(--color-message-info-bg);
+  border: 1px solid var(--color-message-info);
   border-radius: 0.4rem;
   padding: 0.8em 1em;
   margin: 1em 0;

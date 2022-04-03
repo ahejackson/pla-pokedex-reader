@@ -11,21 +11,21 @@
 
     <div>
         <p>Set research levels for all Pokémon to:</p>
-        <button type="button" class="pla-action-button" id="pla-research-all0">Base Level</button>
-        <button type="button" class="pla-action-button" id="pla-research-all1">Level 10</button>
-        <button type="button" class="pla-action-button" id="pla-research-all3">Perfect</button>
+        <button type="button" class="pla-action-button" id="pla-research-set-base">Base Level</button>
+        <button type="button" class="pla-action-button" id="pla-research-set-level10">Level 10</button>
+        <button type="button" class="pla-action-button" id="pla-research-set-perfect">Perfect</button>
     </div>
 
     <div>
-        <button type="button" class="pla-action-button" data-pla-research-load-open>Read from save file</button>
+        <button type="button" class="pla-action-button" id="pla-research-modal-open">Read from save file</button>
     </div>
 
-    <dialog class="pla-modal" id="pla-research-load-modal">
+    <dialog class="pla-modal" id="pla-research-modal">
         <p>Select the file called "main" from an exported save to load the research progress from that save file.</p>
-        <div data-pla-modal-errors></div>
+        <div data-pla-modal-messages></div>
         <div class="pla-control-checkbox">
-            <input type="file" class="pla-action-button" id="pla-research-fileupload">
-            <button type="button" class="pla-action-button" data-pla-research-load-close>Close</button>
+            <input type="file" class="pla-action-button" id="pla-research-selectsave">
+            <button type="button" class="pla-action-button" id="pla-research-modal-close">Close</button>
         </div>
     </dialog>
 </section>
@@ -36,10 +36,10 @@
         <h2>Research Levels</h2>
 
         <div>
-            <input type="text" id="filterlist" placeholder="Search Pokémon...">
+            <input type="text" id="pla-research-filter" placeholder="Search Pokémon...">
         </div>
 
-        <div data-pla-errors></div>
+        <div data-pla-messages></div>
 
         <div>
             <table class="pla-research-table">
@@ -65,7 +65,7 @@
         <td class="pla-research-row-name">
         </td>
         <td>
-            <input type="radio" class="pla-research-radio" value="0" /> Basic
+            <input type="radio" class="pla-research-radio" value="0" checked /> Basic
         </td>
         <td>
             <input type="radio" class="pla-research-radio" value="1" /> Level 10

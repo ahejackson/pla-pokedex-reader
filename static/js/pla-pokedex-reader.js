@@ -1,19 +1,23 @@
 const researchTable = document.querySelector(".pla-research-table");
 const rowTemplate = document.querySelector("[data-pla-research-row-template]");
-const shinyCharmCheckbox = document.querySelector("#pla-research-shinycharm");
-const filterInput = document.querySelector("#filterlist");
+const shinyCharmCheckbox = document.getElementById("pla-research-shinycharm");
+const filterInput = document.getElementById("pla-research-filter");
+const modal = document.getElementById("pla-research-modal");
+const fileUpload = document.getElementById("pla-research-selectsave");
+
+// The areas of the page where messages (such as errors) will be shown
+const messages = document.querySelector("[data-pla-messages]");
+const modalMessages = document.querySelector("[data-pla-modal-messages]");
 
 let hisuidex = [];
 const researchRows = new Map();
 const researchRadios = new Map();
 
-const modal = document.querySelector("#pla-research-load-modal");
-const fileUpload = document.querySelector("#pla-research-fileupload");
-
-const errors = document.querySelector("[data-pla-errors]");
-const modalErrors = document.querySelector("[data-pla-modal-errors]");
-
 const VALID_FILESIZES = [0x136dde, 0x13ad06];
+
+// message types
+const MESSAGE_INFO = "info";
+const MESSAGE_ERROR = "error";
 
 function loadPokedex() {
   fetch("/api/hisuidex")
@@ -25,7 +29,8 @@ function loadPokedex() {
       initialisePage();
     })
     .catch((error) => {
-      showError(
+      showMessage(
+        MESSAGE_ERROR,
         "There was an error connecting to the server, the program is not running properly"
       );
     });
@@ -35,54 +40,46 @@ function loadPokedex() {
 loadPokedex();
 
 const initialisePage = () => {
-  hisuidex.forEach((pokemon) => {
-    const row = rowTemplate.content.cloneNode(true);
-    row.querySelector(".pla-research-row-name").textContent = pokemon.name;
-    row.querySelector(
-      "[data-pla-research-row-img]"
-    ).src = `/static/img/sprite/c_${pokemon.dex_national}.png`;
-    let radios = row.querySelectorAll(".pla-research-radio");
+  // create the table for for each pokemon in the hisui dex
+  hisuidex.forEach((pokemon) => createPokemonRow(pokemon));
 
-    radios[0].name = pokemon.id;
-    radios[1].name = pokemon.id;
-    radios[2].name = pokemon.id;
+  // the button that sets all research to base level
+  document
+    .getElementById("pla-research-set-base")
+    .addEventListener("click", () => {
+      for (const [_, radios] of researchRadios) {
+        radios[0].checked = true;
+        radios[1].checked = false;
+        radios[2].checked = false;
+      }
+      saveResearch();
+    });
 
-    radios[0].addEventListener("change", saveResearch);
-    radios[1].addEventListener("change", saveResearch);
-    radios[2].addEventListener("change", saveResearch);
+  // the button that sets all research to level 10 (+1 roll)
+  document
+    .getElementById("pla-research-set-level10")
+    .addEventListener("click", () => {
+      for (const [_, radios] of researchRadios) {
+        radios[0].checked = false;
+        radios[1].checked = true;
+        radios[2].checked = false;
+      }
+      saveResearch();
+    });
 
-    researchRows.set(pokemon.name, row.querySelector(".pla-research-row"));
-    researchRadios.set(pokemon.name, [radios[0], radios[1], radios[2]]);
-    researchTable.appendChild(row);
-  });
+  // the button that sets all research to perfect (+3 rolls)
+  document
+    .getElementById("pla-research-set-perfect")
+    .addEventListener("click", () => {
+      for (const [_, radios] of researchRadios) {
+        radios[0].checked = false;
+        radios[1].checked = false;
+        radios[2].checked = true;
+      }
+      saveResearch();
+    });
 
-  document.querySelector("#pla-research-all0").addEventListener("click", () => {
-    for (const [_, radios] of researchRadios) {
-      radios[0].checked = true;
-      radios[1].checked = false;
-      radios[2].checked = false;
-    }
-    saveResearch();
-  });
-
-  document.querySelector("#pla-research-all1").addEventListener("click", () => {
-    for (const [_, radios] of researchRadios) {
-      radios[0].checked = false;
-      radios[1].checked = true;
-      radios[2].checked = false;
-    }
-    saveResearch();
-  });
-
-  document.querySelector("#pla-research-all3").addEventListener("click", () => {
-    for (const [_, radios] of researchRadios) {
-      radios[0].checked = false;
-      radios[1].checked = false;
-      radios[2].checked = true;
-    }
-    saveResearch();
-  });
-
+  // the input that filters the list of pokemon
   filterInput.addEventListener("keyup", (e) => {
     const filterText = e.target.value.toLowerCase();
     for (const [name, row] of researchRows) {
@@ -95,42 +92,67 @@ const initialisePage = () => {
   shinyCharmCheckbox.addEventListener("change", saveResearch);
 
   document
-    .querySelector("[data-pla-research-load-open]")
+    .getElementById("pla-research-modal-open")
     .addEventListener("click", () => {
       modal.showModal();
     });
 
   document
-    .querySelector("[data-pla-research-load-close]")
+    .getElementById("pla-research-modal-close")
     .addEventListener("click", () => {
       fileUpload.value = null;
-      modal.close();
+      closeModal();
     });
 
   fileUpload.addEventListener("change", (e) => {
-    selectSaveFile(e.target.files);
+    uploadSave(e.target.files);
   });
 
   loadResearch();
-  modal.showModal();
 };
 
-function selectSaveFile(files) {
+function createPokemonRow(pokemon) {
+  const row = rowTemplate.content.cloneNode(true);
+  row.querySelector(".pla-research-row-name").textContent = pokemon.name;
+  row.querySelector(
+    "[data-pla-research-row-img]"
+  ).src = `/static/img/sprite/c_${pokemon.dex_national}.png`;
+  let radios = row.querySelectorAll(".pla-research-radio");
+
+  radios[0].name = pokemon.id;
+  radios[1].name = pokemon.id;
+  radios[2].name = pokemon.id;
+
+  radios[0].addEventListener("change", saveResearch);
+  radios[1].addEventListener("change", saveResearch);
+  radios[2].addEventListener("change", saveResearch);
+
+  researchRows.set(pokemon.name, row.querySelector(".pla-research-row"));
+  researchRadios.set(pokemon.name, [radios[0], radios[1], radios[2]]);
+  researchTable.appendChild(row);
+}
+
+// select a save file to upload, doing some basic checking
+// to increase the odds that its a file that can be read properly
+// then upload the file and either show error messages returned by the server
+// or set the page state to the read research values
+function uploadSave(files) {
   if (files.length != 1) {
-    showModalError("Select a file");
+    showModalMessage(MESSAGE_ERROR, "You need to select a file");
     return;
   }
 
   const [file] = files;
 
   if (file.name != "main") {
-    showModalError('Select the file "main"');
+    showModalMessage(MESSAGE_ERROR, 'Your save file should be called "main"');
     return;
   }
 
   if (VALID_FILESIZES.indexOf(file.size) < 0) {
-    showModalError(
-      "The file you chose isn't the right size for the PLA save file"
+    showModalMessage(
+      MESSAGE_ERROR,
+      "The file you chose isn't the right size for a PLA save file"
     );
     return;
   }
@@ -138,7 +160,7 @@ function selectSaveFile(files) {
   const formData = new FormData();
   formData.append("save", file);
 
-  fetch("/api/upload", {
+  fetch("/api/read-research", {
     method: "POST",
     body: formData,
   })
@@ -146,48 +168,62 @@ function selectSaveFile(files) {
     .then((res) => {
       console.log(res);
 
+      // there are two possible situations for errors to happen:
+      // this is when everything was sent to the server properly, but it had
+      // an error while reading the save data
       if (res.hasOwnProperty("error")) {
-        showModalError(error);
+        showModalMessage(MESSAGE_ERROR, res.error);
       } else {
+        setResearch(res);
+        saveResearch();
         fileUpload.value = null;
-        modal.closeModal();
+        closeModal();
+        showMessage(MESSAGE_INFO, "Research levels loaded from save");
       }
     })
     .catch((error) => {
-      showModalError(error);
+      // this error state is when there is some kind of problem with the
+      // request or the configuration of the server
+      showModalMessage(MESSAGE_ERROR, error);
     });
 }
 
-function loadResearch() {
-  let plaResearchString = localStorage.getItem("plaResearch");
+// sets the research state
+function setResearch(research) {
+  shinyCharmCheckbox.checked = research["shinycharm"];
 
-  if (plaResearchString == null) {
+  Object.entries(research["rolls"]).forEach(([name, value]) => {
+    setRadioValue(researchRadios.get(name), value);
+  });
+}
+
+// loads the research state
+function loadResearch() {
+  const researchString = localStorage.getItem("pla-research");
+
+  // if there is no previously saved research level data, create it
+  if (researchString == null) {
     saveResearch();
   } else {
-    let plaResearch = JSON.parse(plaResearchString);
-    shinyCharmCheckbox.checked = plaResearch["shinycharm"];
-
-    Object.entries(plaResearch["pokedex"]).forEach(([name, value]) => {
-      setRadioValue(researchRadios.get(name), value);
-    });
+    setResearch(JSON.parse(researchString));
   }
 }
 
-function getResearch() {
+// save the research object to local storage
+// this always creates a new research object to ensure there is no mismatch
+// between the page state and what is saved to storage
+function saveResearch() {
   const research = {};
   research["shinycharm"] = shinyCharmCheckbox.checked;
-  research["pokedex"] = {};
+  research["rolls"] = {};
 
   hisuidex.forEach((pokemon) => {
-    research["pokedex"][pokemon.name] = getRadioValue(
+    research["rolls"][pokemon.name] = getRadioValue(
       researchRadios.get(pokemon.name)
     );
   });
-  return research;
-}
 
-function saveResearch() {
-  localStorage.setItem("plaResearch", JSON.stringify(getResearch()));
+  localStorage.setItem("pla-research", JSON.stringify(research));
 }
 
 function getRadioValue(radios) {
@@ -205,17 +241,25 @@ function setRadioValue(radios, value) {
   }
 }
 
-function showError(error) {
-  errorDiv = document.createElement("div");
-  errorDiv.classList.add("pla-error");
-  errorDiv.textContent = error;
-  errors.appendChild(errorDiv);
+function showMessage(type, message) {
+  messages.innerHTML = "";
+  messageElement = document.createElement("div");
+  messageElement.classList.add(`pla-message-${type}`);
+  messageElement.textContent = message;
+  messages.appendChild(messageElement);
 }
 
-function showModalError(error) {
-  modalErrors.innerHTML = "";
-  errorDiv = document.createElement("div");
-  errorDiv.classList.add("pla-error");
-  errorDiv.textContent = error;
-  modalErrors.appendChild(errorDiv);
+function showModalMessage(type, message) {
+  modalMessages.innerHTML = "";
+  messageElement = document.createElement("div");
+  messageElement.classList.add(`pla-message-${type}`);
+  messageElement.textContent = message;
+  modalMessages.appendChild(messageElement);
+}
+
+// close the modal,
+// clearing all errors or they will persist if the modal is reopened
+function closeModal() {
+  modalMessages.innerHTML = "";
+  modal.close();
 }

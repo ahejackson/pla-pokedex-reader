@@ -40,21 +40,12 @@ class Pokedex():
 
     def species_by_hisuidex(self, number: int):
         return self.species_by_dex(number, 'hisui')
-
-    def gender_from_value(self, species_name: str, gender_value: int):
-        return ""
-
+    
     def dex(self, dex_name):
         return [self._dex[dex_name][key] for key in sorted(self._dex[dex_name])]
-
+    
     def nationaldex(self):
         return self.dex('national')
 
     def hisuidex(self):
-        print(len(self.dex('hisui')))
         return self.dex('hisui')
-
-    @staticmethod
-    def calculate_gender(gender_ratio: int, gender_value: int):
-        return "male"
-
