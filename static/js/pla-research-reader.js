@@ -22,7 +22,7 @@ const researchRows = new Map();
 const researchRadios = new Map();
 
 // The function that actually wires up the page
-const initialisePage = () => {
+function initialisePage() {
   // create the table for for each pokemon in the hisui dex
   hisuidex.forEach((pokemon) => createPokemonRow(pokemon));
 
@@ -92,10 +92,7 @@ const initialisePage = () => {
   });
 
   loadResearch();
-};
-
-// This runs on page load and wires the javascript up to the page once the pokedex data has loaded
-initialisePage();
+}
 
 function createPokemonRow(pokemon) {
   const row = rowTemplate.content.cloneNode(true);
@@ -1705,3 +1702,6 @@ const hisuidex = [
     dex_hisui: "242",
   },
 ];
+
+// This runs on page load and wires the javascript up to the page once the pokedex data has loaded
+initialisePage();
