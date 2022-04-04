@@ -1,4 +1,4 @@
-from flask import Flask, flash, render_template, request
+from flask import Flask, render_template, request
 from pla.core.pokedex import Pokedex
 from pla.saves.pla_save_reader import read_research
 
@@ -11,7 +11,7 @@ hisuidex = pokedex.hisuidex()
 
 @app.route('/')
 def home():
-    return render_template('index.html', js='pla-pokedex-reader.js', pokemon=pokedex.hisuidex())
+    return render_template('index.html', js='pla-research-reader.js', pokemon=pokedex.hisuidex())
 
 @app.route('/api/hisuidex')
 def pokemon():
