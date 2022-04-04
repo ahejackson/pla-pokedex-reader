@@ -21,12 +21,6 @@ const modalMessages = document.querySelector("[data-pla-modal-messages]");
 const researchRows = new Map();
 const researchRadios = new Map();
 
-// This runs on page load and wires the javascript up to the page once the pokedex data has loaded
-function loadPokedex() {
-  initialisePage();
-}
-loadPokedex();
-
 // The function that actually wires up the page
 const initialisePage = () => {
   // create the table for for each pokemon in the hisui dex
@@ -99,6 +93,9 @@ const initialisePage = () => {
 
   loadResearch();
 };
+
+// This runs on page load and wires the javascript up to the page once the pokedex data has loaded
+initialisePage();
 
 function createPokemonRow(pokemon) {
   const row = rowTemplate.content.cloneNode(true);
