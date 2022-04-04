@@ -143,7 +143,7 @@ const hisuiFormSprites = {
   Goodra: "-1",
   Growlithe: "-1",
   Arcanine: "-1",
-  Basculin: "-1",
+  Basculin: "-2",
   Voltorb: "-1",
   Electrode: "-1",
   Avalugg: "-1",
