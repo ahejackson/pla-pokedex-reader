@@ -1,3 +1,11 @@
+// valid PLA save file sizes
+const VALID_FILESIZES = [0x136dde, 0x13ad06];
+
+// message types
+const MESSAGE_INFO = "info";
+const MESSAGE_ERROR = "error";
+
+// references to page elements
 const researchTable = document.querySelector(".pla-research-table");
 const rowTemplate = document.querySelector("[data-pla-research-row-template]");
 const shinyCharmCheckbox = document.getElementById("pla-research-shinycharm");
@@ -9,23 +17,18 @@ const fileUpload = document.getElementById("pla-research-selectsave");
 const messages = document.querySelector("[data-pla-messages]");
 const modalMessages = document.querySelector("[data-pla-modal-messages]");
 
+// page state
 let hisuidex = [];
 const researchRows = new Map();
 const researchRadios = new Map();
 
-const VALID_FILESIZES = [0x136dde, 0x13ad06];
-
-// message types
-const MESSAGE_INFO = "info";
-const MESSAGE_ERROR = "error";
-
+// This runs on page load and wires the javascript up to the page once the pokedex data has loaded
 function loadPokedex() {
   fetch("/api/hisuidex")
     .then((response) => response.json())
     .then((res) => {
       hisuidex = res.hisuidex;
 
-      // The javascript is wired up to the page once the pokedex data has loaded
       initialisePage();
     })
     .catch((error) => {
@@ -35,10 +38,9 @@ function loadPokedex() {
       );
     });
 }
-
-// This gets done first, to make sure the pokedex is loaded before the page is properly configured
 loadPokedex();
 
+// The function that actually wires up the page
 const initialisePage = () => {
   // create the table for for each pokemon in the hisui dex
   hisuidex.forEach((pokemon) => createPokemonRow(pokemon));
@@ -114,9 +116,7 @@ const initialisePage = () => {
 function createPokemonRow(pokemon) {
   const row = rowTemplate.content.cloneNode(true);
   row.querySelector(".pla-research-row-name").textContent = pokemon.name;
-  row.querySelector(
-    "[data-pla-research-row-img]"
-  ).src = `/static/img/sprite/c_${pokemon.dex_national}.png`;
+  row.querySelector("[data-pla-research-row-img]").src = getSpriteSrc(pokemon);
   let radios = row.querySelectorAll(".pla-research-radio");
 
   radios[0].name = pokemon.id;
@@ -130,6 +130,33 @@ function createPokemonRow(pokemon) {
   researchRows.set(pokemon.name, row.querySelector(".pla-research-row"));
   researchRadios.set(pokemon.name, [radios[0], radios[1], radios[2]]);
   researchTable.appendChild(row);
+}
+
+// This is an ugly (temporary?) hack
+const hisuiFormSprites = {
+  Decidueye: "-1",
+  Typhlosion: "-1",
+  Samurott: "-1",
+  Qwilfish: "-1",
+  Lilligant: "-1",
+  Sliggoo: "-1",
+  Goodra: "-1",
+  Growlithe: "-1",
+  Arcanine: "-1",
+  Basculin: "-1",
+  Voltorb: "-1",
+  Electrode: "-1",
+  Avalugg: "-1",
+  Zorua: "-1",
+  Zoroark: "-1",
+  Braviary: "-1",
+};
+function getSpriteSrc(pokemon) {
+  return `/static/img/sprite/c_${pokemon.dex_national}${
+    hisuiFormSprites.hasOwnProperty(pokemon.name)
+      ? hisuiFormSprites[pokemon.name]
+      : ""
+  }.png`;
 }
 
 // select a save file to upload, doing some basic checking
