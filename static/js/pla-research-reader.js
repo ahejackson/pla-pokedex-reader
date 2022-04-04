@@ -133,7 +133,7 @@ const hisuiFormSprites = {
   Braviary: "-1",
 };
 function getSpriteSrc(pokemon) {
-  return `/static/img/sprite/c_${pokemon.dex_national}${
+  return `static/img/sprite/c_${pokemon.dex_national}${
     hisuiFormSprites.hasOwnProperty(pokemon.name)
       ? hisuiFormSprites[pokemon.name]
       : ""
