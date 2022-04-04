@@ -66,9 +66,10 @@ function initialisePage() {
   filterInput.addEventListener("keyup", (e) => {
     const filterText = e.target.value.toLowerCase();
     for (const [name, row] of researchRows) {
-      name.toLowerCase().startsWith(filterText)
-        ? (row.style.display = "table-row")
-        : (row.style.display = "none");
+      row.classList.toggle(
+        "hidden",
+        !name.toLowerCase().startsWith(filterText)
+      );
     }
   });
 
@@ -228,7 +229,7 @@ function setRadioValue(radios, value) {
 function showMessage(type, message) {
   messages.innerHTML = "";
   messageElement = document.createElement("div");
-  messageElement.classList.add(`pla-message-${type}`);
+  messageElement.classList.add("pla-message", `pla-message-${type}`);
   messageElement.textContent = message;
   messages.appendChild(messageElement);
 }
@@ -236,7 +237,7 @@ function showMessage(type, message) {
 function showModalMessage(type, message) {
   modalMessages.innerHTML = "";
   messageElement = document.createElement("div");
-  messageElement.classList.add(`pla-message-${type}`);
+  messageElement.classList.add("pla-message", `pla-message-${type}`);
   messageElement.textContent = message;
   modalMessages.appendChild(messageElement);
 }

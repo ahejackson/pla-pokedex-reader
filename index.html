@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
     <title>PLA Research Reader</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,13 +13,34 @@
 </head>
 
 <body>
-    <header>
+    <div class="diagonal-box"></div>
+
+    <header class="space-between">
         <h1 class="pla-heading"><span class="pla-heading-highlight">PLA</span> Research Reader</h1>
+
+        <button class="theme-toggle" id="theme-toggle" title="Toggles light and dark mode" aria-live="light">
+            <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24">
+                <g class="theme-toggle-dark">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </g>
+                <g class="theme-toggle-light">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </g>
+            </svg>
+        </button>
     </header>
 
     <main>
         <section class="pla-section-options">
-            <div class="pla-control-checkbox">
+            <div class="space-between">
                 <label for="pla-research-shinycharm">
                     Do you have the Shiny Charm?
                 </label>
@@ -33,7 +55,7 @@
             </div>
 
             <div class="pla-control-actions">
-                <button type="button" class="pla-action-button" id="pla-research-modal-open">Read from save
+                <button type="button" class="pla-button pla-button-action" id="pla-research-modal-open">Read from save
                     file</button>
             </div>
 
@@ -41,12 +63,14 @@
                 <p>Select the file called "main" from an exported save to load the research progress from that save
                     file.</p>
                 <div data-pla-modal-messages></div>
-                <div class="pla-control-checkbox">
+                <div class="space-between">
                     <div class="pla-file-input">
                         <input type="file" id="pla-research-selectsave">
-                        <label for="pla-research-selectsave" class="pla-action-button">Choose Save File</label>
+                        <label for="pla-research-selectsave" class="pla-button pla-button-action">Choose Save
+                            File</label>
                     </div>
-                    <button type="button" class="pla-action-button" id="pla-research-modal-close">Close</button>
+                    <button type="button" class="pla-button pla-button-action"
+                        id="pla-research-modal-close">Close</button>
                 </div>
             </dialog>
         </section>
@@ -102,7 +126,7 @@
             </td>
         </tr>
     </template>
-
+    <script src="static/js/pla-common.js"></script>
     <script src="static/js/pla-research-reader.js"></script>
 </body>
 
