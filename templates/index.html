@@ -2,7 +2,7 @@
 
 {% block main %}
 <section class="pla-section-options">
-    <div class="pla-control-checkbox">
+    <div class="space-between">
         <label for="pla-research-shinycharm">
             Do you have the Shiny Charm?
         </label>
@@ -17,18 +17,20 @@
     </div>
 
     <div class="pla-control-actions">
-        <button type="button" class="pla-action-button" id="pla-research-modal-open">Read from save file</button>
+        <button type="button" class="pla-button pla-button-action" id="pla-research-modal-open">Read from save
+            file</button>
     </div>
 
     <dialog class="pla-modal" id="pla-research-modal">
-        <p>Select the file called "main" from an exported save to load the research progress from that save file.</p>
+        <p>Select the file called "main" from an exported save to load the research progress from that save
+            file.</p>
         <div data-pla-modal-messages></div>
-        <div class="pla-control-checkbox">
+        <div class="space-between">
             <div class="pla-file-input">
                 <input type="file" id="pla-research-selectsave">
-                <label for="pla-research-selectsave" class="pla-action-button">Choose Save File</label>
+                <label for="pla-research-selectsave" class="pla-button pla-button-action">Choose Save File</label>
             </div>
-            <button type="button" class="pla-action-button" id="pla-research-modal-close">Close</button>
+            <button type="button" class="pla-button pla-button-action" id="pla-research-modal-close">Close</button>
         </div>
     </dialog>
 </section>
@@ -84,18 +86,5 @@
             </label>
         </td>
     </tr>
-</template>
-
-<template data-pla-spinner>
-    <div class="lds-roller">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-    </div>
 </template>
 {% endblock %}
