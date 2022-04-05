@@ -304,7 +304,6 @@ section {
 }
 
 /* Action Button */
-
 .pla-button-action {
   border: 2px solid var(--brand);
   background-color: var(--brand);
@@ -442,15 +441,44 @@ section {
 }
 
 /* Page Background */
-.diagonal-box {
-  background-image: linear-gradient(45deg, var(--surface4), var(--surface3));
-  height: 25vh;
+.pla-background-1 {
+  background-image: url("/static/img/pla-header.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: left top;
+  opacity: 0.1;
   position: absolute;
-  top: -10vh;
+  top: 0;
   left: 0;
   right: 0;
+  height: clamp(300px, 35vh, 600px);
   z-index: -100;
-  transform: skewY(-5deg);
+}
+
+[color-scheme="light"] .pla-background-1 {
+  opacity: 0.2;
+}
+
+[color-scheme="dark"] .pla-background-1 {
+  opacity: 0.1;
+}
+
+.pla-background-2 {
+  background-color: var(--surface3);
+  position: absolute;
+  top: clamp(250px, 25vh, 550px);
+  left: 0;
+  right: 0;
+  z-index: -99;
+  height: 30vh;
+  transform: translateY(-5vw) skewY(-5deg);
+  box-shadow: 0px 0px 80px 80px var(--surface3);
+}
+
+@media only screen and (min-width: 2400px) {
+  .pla-background-2 {
+    transform: translateY(-5vw) skewY(-4deg);
+  }
 }
 
 /* Loading Spinner */
